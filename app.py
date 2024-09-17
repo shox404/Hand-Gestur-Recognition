@@ -1,22 +1,26 @@
 import cv2
 import mediapipe as mp
 import pyautogui
+import tkinter as tk
+
+root = tk.Tk()
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
 hands = mp_hands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7)
 
+
 def process_hand_gestur(hand_landmarks, frame):
     """Processes hand landmarks and moves the cursor"""
     index_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
-    
-    h, w, _ = frame.shape
-    
+
+    h, w = root.winfo_screenheight(), root.winfo_screenwidth()
     x = int(index_tip.x * w)
     y = int(index_tip.y * h)
-    
+
     pyautogui.moveTo(x, y)
+
 
 def app():
     """Main function"""
@@ -44,6 +48,7 @@ def app():
             break
     cap.release()
     cv2.destroyAllWindows()
+
 
 if __name__ == "__main__":
     app()
