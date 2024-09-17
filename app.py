@@ -11,18 +11,12 @@ def process_hand_gestur(hand_landmarks, frame):
     """Processes hand landmarks and moves the cursor"""
     index_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
     
-    # Get the image dimensions
     h, w, _ = frame.shape
     
-    # Calculate the cursor position
     x = int(index_tip.x * w)
     y = int(index_tip.y * h)
     
-    # Move the cursor using pyautogui
     pyautogui.moveTo(x, y)
-
-    # print(f"Index Tip: {index_tip.x}, {index_tip.y}, {index_tip.z}")
-    # print(f"Cursor Position: {x}, {y}")
 
 def app():
     """Main function"""
