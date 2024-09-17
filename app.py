@@ -1,19 +1,28 @@
 import cv2
 import mediapipe as mp
+import pyautogui
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
 hands = mp_hands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7)
 
-
-def process_hand_gestur(hand_landmarks):
-    """Processes hand landmarks"""
-    thumb_tip = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP]
+def process_hand_gestur(hand_landmarks, frame):
+    """Processes hand landmarks and moves the cursor"""
     index_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
-    print(f"Thumb Tip: {thumb_tip.x}, {thumb_tip.y}, {thumb_tip.z}")
-    print(f"Index Tip: {index_tip.x}, {index_tip.y}, {index_tip.z}")
+    
+    # Get the image dimensions
+    h, w, _ = frame.shape
+    
+    # Calculate the cursor position
+    x = int(index_tip.x * w)
+    y = int(index_tip.y * h)
+    
+    # Move the cursor using pyautogui
+    pyautogui.moveTo(x, y)
 
+    # print(f"Index Tip: {index_tip.x}, {index_tip.y}, {index_tip.z}")
+    # print(f"Cursor Position: {x}, {y}")
 
 def app():
     """Main function"""
@@ -30,7 +39,7 @@ def app():
 
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
-                process_hand_gestur(hand_landmarks)
+                process_hand_gestur(hand_landmarks, frame)
                 mp_drawing.draw_landmarks(
                     frame, hand_landmarks, mp_hands.HAND_CONNECTIONS
                 )
@@ -41,7 +50,6 @@ def app():
             break
     cap.release()
     cv2.destroyAllWindows()
-
 
 if __name__ == "__main__":
     app()
